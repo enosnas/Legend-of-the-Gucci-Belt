@@ -66,8 +66,6 @@ public class PlayerMovement : MonoBehaviour
     // Every frame will be recorded and take input with update
     private void Update()
     {
-        Debug.Log("Swimming:" + isSwimming());
-
         #region Horizontal Movement
         // Storing the horiztonal input in a float value for ease of use 
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -82,12 +80,15 @@ public class PlayerMovement : MonoBehaviour
         //which we obtain input using the Input.GetAxis property which will be defined when left/right 
         // or a/d is pressed and changes velocity on a scale from -1 to 1 in the x axis
         // we input nothing for the y movement as we do not want vertical movement
-        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+        if(isSwimming())
+            body.velocity = new Vector2(horizontalInput * speed/2, body.velocity.y);
+        else
+            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
         #endregion
 
         #region Jump Movement
         // Add jumping when the space bar is pressed
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        if (Input.GetKey(KeyCode.Space) && isGrounded() && !isSwimming())
         {
             Jump();
             // consider moving this to the animator as an event during the jump animation to make work
@@ -97,15 +98,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // bhopping
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !isSwimming())
             Jump();
 
         // adjustable jump height code
-        if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0)
+        if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0 && !isSwimming())
             body.velocity = new Vector2(body.velocity.x, body.velocity.y / 2);
 
         // adding fast fall
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && !isSwimming())
             FastFall();
         #endregion
 
@@ -121,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
 
         #region Grounded and Swimming Check
         // coyote timer reset or decrease when in the air and multi jump reset on ground
-        if (isGrounded() || isSwimming())
+        if (isGrounded())
         {
             coyoteCounter = coyoteTime;
             jumpCounter = extraJumps;
@@ -129,10 +130,17 @@ public class PlayerMovement : MonoBehaviour
         else
             coyoteCounter -= Time.deltaTime;
 
+        if (isSwimming())
+            swimJumpCooldownTimer -= Time.deltaTime;
+        else
+            swimJumpCooldownTimer = swimJumpCooldown;
+
         // set animator parameters
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
         #endregion
+
+        Debug.Log("Cooldown Timer:" + swimJumpCooldownTimer);
     }
 
     #region Jump Logic
@@ -176,6 +184,8 @@ public class PlayerMovement : MonoBehaviour
     #region Swimming Logic
     private void Surface()
     {
+        if (isSwimming() && swimJumpCooldownTimer > 0) return;
+
         if (isSwimming())
             body.velocity = new Vector2(body.velocity.x, jumpPower / 1.5f);
     }

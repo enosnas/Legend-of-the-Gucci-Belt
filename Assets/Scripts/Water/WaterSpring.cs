@@ -5,18 +5,23 @@ using UnityEngine.U2D;
 
 public class WaterSpring : MonoBehaviour
 {
+    [Header("Water Object Assignments")]
+    public Transform springTransform;
+    [SerializeField] private SpriteShapeController spriteShapeController = null;
+
+    [Header("Wave Point Parameters")]
     public float velocity = 0;
     public float force = 0;
     // current height
     public float height = 0f;
     // normal height
     private float target_height = 0f;
-    public Transform springTransform;
-    [SerializeField]
-    private SpriteShapeController spriteShapeController = null;
+    // water resistance to player movement
+    [SerializeField] float resistance = 40f;
     private int waveIndex = 0;
     private List<WaterSpring> springs = new();
-    private float resistance = 40f;
+
+    // setting the index, velocity, height, and target height of the water points
     public void Init(SpriteShapeController ssc)
     {
 
@@ -28,6 +33,7 @@ public class WaterSpring : MonoBehaviour
         height = transform.localPosition.y;
         target_height = transform.localPosition.y;
     }
+
     // with dampening
     // adding the dampening to the force
     public void WaveSpringUpdate(float springStiffness, float dampening)
@@ -53,16 +59,23 @@ public class WaterSpring : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Collision:" );
         if (other.gameObject.CompareTag("Player"))
         {
-            PlayerMovement playerMovement = other.gameObject.GetComponent<PlayerMovement>();
-            Rigidbody2D rb = playerMovement.GetComponent<Rigidbody2D>();
+            //PlayerMovement playerMovement = other.gameObject.GetComponent<PlayerMovement>();
+            Rigidbody2D rb = other.gameObject.GetComponent<Rigidbody2D>();
             var speed = rb.velocity;
 
             velocity += speed.y / resistance;
+
+            // Call the Splash method on collision
+            WaterShapeController waterShapeController = spriteShapeController.GetComponent<WaterShapeController>();
+            if (waterShapeController != null)
+            {
+                int index = transform.GetSiblingIndex();
+                waterShapeController.Splash(index, velocity);
+            }
         }
     }
 }

@@ -21,6 +21,9 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip deathMusic;
     [SerializeField] private AudioClip finishMusic;
 
+    [Header("Level 2 Music")]
+    [SerializeField] private AudioClip level2Music;
+
     private float skipTime = 21.62f;
 
 
@@ -39,12 +42,24 @@ public class SoundManager : MonoBehaviour
         ChangeSFXVolume(0);
         ChangeMenuVolume(0);
     }
+
     private void Update()
     {
         scene = SceneManager.GetActiveScene();
+
         if (scene.buildIndex == 0 && !mainmusicSource.isPlaying)
         {
             PlayMainMenuMusic();
+        }
+
+        if (scene.buildIndex == 1 && !mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
+        {
+            PlayMainMusic();
+        }
+
+        if (scene.buildIndex == 2 && !mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
+        {
+            PlayLevel2Music();
         }
     }
 
@@ -116,7 +131,7 @@ public class SoundManager : MonoBehaviour
     }
     #endregion
 
-    #region Music Playback Functions
+    #region Music Playback (Pause/Death Screen Music) Functions
     // Play the pause music
     public void PlayPauseMusic()
     {
@@ -139,7 +154,7 @@ public class SoundManager : MonoBehaviour
     }
     #endregion
 
-    #region Main Music Playback Functions
+    #region Main Music (Level Music) Playback Functions
     // pause playing a menu audio clip that was set
     public void PauseMainMusic()
     {
@@ -164,6 +179,12 @@ public class SoundManager : MonoBehaviour
     {
         if (mainmusicSource != null && !mainmusicSource.isPlaying)
             mainmusicSource.PlayOneShot(mainMusic);
+    }
+
+    public void PlayLevel2Music()
+    {
+        if(mainmusicSource != null && !mainmusicSource.isPlaying)
+            mainmusicSource.PlayOneShot(level2Music);
     }
 
     public void PlayFinishMusic()

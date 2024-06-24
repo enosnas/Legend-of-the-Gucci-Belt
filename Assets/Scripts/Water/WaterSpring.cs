@@ -7,7 +7,8 @@ public class WaterSpring : MonoBehaviour
 {
     [Header("Water Object Assignments")]
     public Transform springTransform;
-    [SerializeField] private SpriteShapeController spriteShapeController = null;
+    private SpriteShapeController spriteShapeController = null;
+    private SpriteShapeRenderer spriteRenderer;
 
     [Header("Wave Point Parameters")]
     public float velocity = 0;
@@ -20,6 +21,13 @@ public class WaterSpring : MonoBehaviour
     [SerializeField] float resistance = 40f;
     private int waveIndex = 0;
     private List<WaterSpring> springs = new();
+
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponentInParent<SpriteShapeRenderer>();
+        spriteShapeController = GetComponentInParent<SpriteShapeController>();
+    }
 
     // setting the index, velocity, height, and target height of the water points
     public void Init(SpriteShapeController ssc)
@@ -68,6 +76,7 @@ public class WaterSpring : MonoBehaviour
             var speed = rb.velocity;
 
             velocity += speed.y / resistance;
+            spriteRenderer.color = new Color(1, 0, 0, 0.5f);
 
             // Call the Splash method on collision
             WaterShapeController waterShapeController = spriteShapeController.GetComponent<WaterShapeController>();

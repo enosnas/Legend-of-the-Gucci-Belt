@@ -16,6 +16,10 @@ public class GameStateManager : MonoBehaviour
     // allowing player to use the gun
     public static bool Gyatt { get; set; }
 
+    public static bool Paused { get; set; }
+
+    public static bool playerLost { get; set; } = false;
+
     private void Update()
     {
         if (scene.buildIndex != 0 && PauseScreen.activeInHierarchy == false)

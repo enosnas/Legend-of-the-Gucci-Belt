@@ -37,7 +37,7 @@ public class PlayerUIManager : MonoBehaviour
         // making the current scene set to the scene variable
         scene = SceneManager.GetActiveScene();
 
-        if (scene.buildIndex != 0 && scene.buildIndex != 3)
+        if (scene.buildIndex != 0)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -75,6 +75,7 @@ public class PlayerUIManager : MonoBehaviour
     public void GameOver()
     {
         gameOverScreen.SetActive(true);
+        GameStateManager.playerLost = true;
         SoundManager.instance.StopMusic();
         SoundManager.instance.StopMainMusic();
         SoundManager.instance.PlayDeathMusic();
@@ -84,12 +85,14 @@ public class PlayerUIManager : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        GameStateManager.playerLost = false;
     }
 
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
         PauseGame(false);
+        GameStateManager.playerLost = false;
     }
 
     public void Quit()
@@ -103,6 +106,9 @@ public class PlayerUIManager : MonoBehaviour
     {
         // pausing and un-pausing 
         pauseScreen.SetActive(_status);
+
+        // tracking pause status with the global variable in gamestatemanager
+        GameStateManager.Paused = _status;
 
         if (_status)
             Time.timeScale = 0;

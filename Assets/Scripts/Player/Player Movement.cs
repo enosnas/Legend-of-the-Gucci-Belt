@@ -139,8 +139,6 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
         #endregion
-
-        Debug.Log("Cooldown Timer:" + swimJumpCooldownTimer);
     }
 
     #region Jump Logic

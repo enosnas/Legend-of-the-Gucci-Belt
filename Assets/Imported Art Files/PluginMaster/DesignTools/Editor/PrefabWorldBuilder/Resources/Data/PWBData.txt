@@ -461,7 +461,8 @@
                     "Enemy",
                     "Wall",
                     "Checkpoint",
-                    "Music Player"
+                    "Music Player",
+                    "Rhythm Button"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -633,7 +634,8 @@
                 "Enemy",
                 "Wall",
                 "Checkpoint",
-                "Music Player"
+                "Music Player",
+                "Rhythm Button"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -2174,7 +2176,8 @@
                     "Enemy",
                     "Wall",
                     "Checkpoint",
-                    "Music Player"
+                    "Music Player",
+                    "Rhythm Button"
                 ]
             }
         ],
@@ -2208,7 +2211,8 @@
                 "Enemy",
                 "Wall",
                 "Checkpoint",
-                "Music Player"
+                "Music Player",
+                "Rhythm Button"
             ]
         }
     },

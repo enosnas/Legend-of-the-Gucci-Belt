@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - Checkpoint
   - Music Player
+  - Rhythm Button
   layers:
   - Default
   - TransparentFX
@@ -51,6 +52,12 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 3096328241
+    locked: 0
+  - name: Rhythm Buttons
+    uniqueID: 1111847107
+    locked: 0
+  - name: Rhythm Arrows
+    uniqueID: 933576083
     locked: 0
   - name: Player
     uniqueID: 3752956229

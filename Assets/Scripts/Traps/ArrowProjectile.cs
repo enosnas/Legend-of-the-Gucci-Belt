@@ -24,12 +24,12 @@ public class ArrowProjectile : EnemyDamage // adds inheritance from the enemy da
             gameObject.SetActive(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         //run the logic from the parent script enemydamage which we inherit from first then ours
         // happens since we have ontriggerenter2d in the inheritance and here as well
         base.OnTriggerEnter2D(collision);
-        
+
         //when hitting an object deactivate
         gameObject.SetActive(false);
     }

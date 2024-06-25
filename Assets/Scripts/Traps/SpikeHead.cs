@@ -81,12 +81,15 @@ public class SpikeHead : EnemyDamage
         attacking = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player" || collision.tag == "Ground" )
         {
             SoundManager.instance.PlaySound(impactSound);
+
+            // Call the base class method to ensure damage calculation
             base.OnTriggerEnter2D(collision);
+
             // stop the spikehead once it hits something
             Stop();
         }

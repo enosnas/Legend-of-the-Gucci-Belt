@@ -9,10 +9,9 @@ public class EnemyDamage : MonoBehaviour
     [SerializeField] protected float damage;
 
     // checking collision with player and causing damage
-    protected void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player")
             collision.GetComponent<Health>().TakeDamage(damage);
-
     }
 }

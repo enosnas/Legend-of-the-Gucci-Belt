@@ -10,6 +10,7 @@ public class SoundManager : MonoBehaviour
     private AudioSource effectSource; // reference to the game effects sound AudioSource
     private AudioSource menuSource; // reference to the menu effects sound AudioSource
     private AudioSource mainmusicSource; // Reference to the main level music AudioSource
+    private AudioSource minigamemusicSource; // Reference to the main level music AudioSource
 
     // referencing scene function
     Scene scene;
@@ -24,6 +25,9 @@ public class SoundManager : MonoBehaviour
     [Header("Level 2 Music")]
     [SerializeField] private AudioClip level2Music;
 
+    [Header("Minigame Music")]
+    [SerializeField] private AudioClip rhythmMusic1;
+
     private float skipTime = 21.62f;
 
 
@@ -36,6 +40,7 @@ public class SoundManager : MonoBehaviour
         effectSource = transform.GetChild(1).GetComponent<AudioSource>();
         menuSource = transform.GetChild(2).GetComponent<AudioSource>();
         mainmusicSource = transform.GetChild(3).GetComponent<AudioSource>();
+        minigamemusicSource = transform.GetChild(4).GetComponent<AudioSource>();
 
         // loading player preferences by changing volumes by 0
         ChangeMusicVolume(0);
@@ -57,7 +62,12 @@ public class SoundManager : MonoBehaviour
             PlayMainMusic();
         }
 
-        if (scene.buildIndex == 2 && !mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
+        if (scene.buildIndex == 2 && !minigamemusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true && GameStateManager.minigameStart == true)
+        {
+            PlayRhythmMusic1();
+        }
+
+        if (scene.buildIndex == 3 && !mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
         {
             PlayLevel2Music();
         }
@@ -90,6 +100,7 @@ public class SoundManager : MonoBehaviour
     {
         ChangeSourceVolume("musicVolume", _change, musicSource);
         ChangeSourceVolume("mainmusicVolume", _change, mainmusicSource);
+        ChangeSourceVolume("minigamemusicVolume", _change, minigamemusicSource);
     }
 
     public void ChangeSFXVolume(float _change)
@@ -159,19 +170,24 @@ public class SoundManager : MonoBehaviour
     public void PauseMainMusic()
     {
         mainmusicSource.Pause();
+        minigamemusicSource.Pause();
     }
 
     // unpause playing a menu audio clip that was set
     public void UnPauseMainMusic()
     {
         mainmusicSource.UnPause();
+        minigamemusicSource.UnPause();
     }
 
     // Stop the main level music
     public void StopMainMusic()
     {
         if (mainmusicSource != null && mainmusicSource.isPlaying)
+        {
             mainmusicSource.Stop();
+            minigamemusicSource.Stop();
+        }
     }
 
     // Play the main level music
@@ -213,6 +229,14 @@ public class SoundManager : MonoBehaviour
             mainmusicSource.Play();
             mainmusicSource.time = skipTime;
         }
+    }
+    #endregion
+
+    #region Minigame Music Playback Functions
+    public void PlayRhythmMusic1()
+    {
+        if (minigamemusicSource != null && !minigamemusicSource.isPlaying)
+            minigamemusicSource.PlayOneShot(rhythmMusic1);
     }
     #endregion
 }

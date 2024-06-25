@@ -17,7 +17,7 @@ public class levelExit : MonoBehaviour
         {
             if(scene.buildIndex == 1)
             {
-                GameStateManager.Gyatt = true;
+               //GameStateManager.Gyatt = true;
                 SceneManager.LoadScene(2);
             }
 

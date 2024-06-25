@@ -6,10 +6,10 @@ public class ButtonController : MonoBehaviour
 {
     // assigning images for pressed and unpressed buttons
     private SpriteRenderer spriteRenderer;
-    public Sprite defaultImage;
-    public Sprite pressedImage;
+    [SerializeField] private Sprite defaultImage;
+    [SerializeField] private Sprite pressedImage;
 
-    public KeyCode keytoPress;
+    [SerializeField] private KeyCode keytoPress;
 
     private void Awake()
     {

@@ -38,7 +38,7 @@ public class EnemyProjectile : EnemyDamage // adds inheritance from the enemy da
             gameObject.SetActive(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected override void OnTriggerEnter2D(Collider2D collision)
     {
         
         hit = true;

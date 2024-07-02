@@ -65,13 +65,13 @@ public class NoteObject : MonoBehaviour
             grade = 2;
             Debug.Log("Perfect Hit!");
         }
-        else if (distance < 0.3f)
+        else if (distance < 0.4f)
         {
             points = 555; // Great
             grade = 1;
             Debug.Log("Great Hit!");
         }
-        else if (distance < 0.45f)
+        else if (distance < 0.6f)
         {
             points = 333; // Good
             grade = 0;

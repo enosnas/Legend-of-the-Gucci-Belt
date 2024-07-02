@@ -10,6 +10,11 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+# Ignore specific directories since their files are large
+# Also since they are paid assets
+Assets/Imported Art Files/Animpic Studio Low Poly/
+Assets/Imported Art Files/Eldamar Low Poly/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/

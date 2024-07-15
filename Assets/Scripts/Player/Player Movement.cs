@@ -6,9 +6,12 @@ public class PlayerMovement : MonoBehaviour
     // Also make it serialized which allows us to change it with an input field in the player object menu
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
+    private int jumpCounter = 1;
+
     [SerializeField] private LayerMask groundLayer; // creating a reference to the ground layer that our player will be standing on
     [SerializeField] private LayerMask waterLayer; // creating a reference to the water layer that our player will be swimming through
     [SerializeField] private LayerMask wallLayer;    //creating wall layer
+    private float horizontalInput; // storing the horizontal input of the player
     private Rigidbody2D body; // Creating the reference to the rigidbody for player movement and naming it body
     private Animator anim;     // Creating the reference to the animator for player animation, not used but helpful
     private BoxCollider2D boxCollider;     // reference to our boxcollision
@@ -22,9 +25,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float coyoteTime;     // how much hang time allowed in the air before unable to jump
     private float coyoteCounter;     // how long since we run off an edge 
 
-    [Header("Multi Jumps")]
-    [SerializeField] private int extraJumps;
-    private int jumpCounter;
+    [Header("Wall Jump/Climb")]
+    [SerializeField] private float wallslidingSpeed;
+    private bool isWallsliding;
+    private bool isWalljumping;
+    private float walljumpingDirection;
+    [SerializeField] private float walljumpingCooldown;
+    private float walljumpingCounter;
+    [SerializeField] private float walljumpingDuration;
+    [SerializeField] private float walljumpDistance;
+    [SerializeField] private float walljumpHeight;
+
+
+
 
     [Header("Swim Jump Cooldown")]
     [SerializeField] private float swimJumpCooldown;
@@ -68,46 +81,43 @@ public class PlayerMovement : MonoBehaviour
     {
         #region Horizontal Movement
         // Storing the horiztonal input in a float value for ease of use 
-        float horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
 
         // flipping the player's direction when moving left or right
         if (horizontalInput > 0.01f)
-            transform.localScale = new Vector3(3, 3, 0);
+            transform.localScale = new Vector3(3, 3, 1);
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-3, 3, 1);
 
+        // player movement
         // Will apply velocity in directions based on a vector, our first is left and right movement 
         //which we obtain input using the Input.GetAxis property which will be defined when left/right 
         // or a/d is pressed and changes velocity on a scale from -1 to 1 in the x axis
         // we input nothing for the y movement as we do not want vertical movement
-        if(isSwimming())
-            body.velocity = new Vector2(horizontalInput * speed/2, body.velocity.y);
-        else
+
+        if (!onWall())
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+        // slowing movement while swimming
+        if (isSwimming())
+            body.velocity = new Vector2(horizontalInput * speed/2, body.velocity.y);
         #endregion
 
-        #region Jump Movement
-        // Add jumping when the space bar is pressed
-        if (Input.GetKey(KeyCode.Space) && isGrounded() && !isSwimming())
+        #region Jump and Wall Jump Movement
+        if (Input.GetKey(KeyCode.Space) || Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
-            // consider moving this to the animator as an event during the jump animation to make work
-            // while holding down space bar
-            //if(Input.GetKeyDown(KeyCode.Space) && isGrounded())
-            //SoundManager.instance.PlaySound(jumpSound);
+            if (GameStateManager.squirrelChosen == true)
+                WallJump();
         }
-
-        // bhopping
-        if (Input.GetKeyDown(KeyCode.Space) && !isSwimming())
-            Jump();
-
+        
         // adjustable jump height code
-        if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0 && !isSwimming())
+        if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0)
             body.velocity = new Vector2(body.velocity.x, body.velocity.y / 2);
 
-        // adding fast fall
-        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && !isSwimming())
-            FastFall();
+        if(GameStateManager.squirrelChosen == true)
+            WallSlide();
+
         #endregion
 
         #region Swim Movement
@@ -120,12 +130,12 @@ public class PlayerMovement : MonoBehaviour
             Diving();
         #endregion
 
-        #region Grounded and Swimming Check
+        #region Grounded and Swimming and Climbing Check
         // coyote timer reset or decrease when in the air and multi jump reset on ground
         if (isGrounded())
         {
             coyoteCounter = coyoteTime;
-            jumpCounter = extraJumps;
+            jumpCounter = 1;
         }
         else
             coyoteCounter -= Time.deltaTime;
@@ -135,10 +145,27 @@ public class PlayerMovement : MonoBehaviour
         else
             swimJumpCooldownTimer = swimJumpCooldown;
 
+        if (onWall())
+        {
+            if (GameStateManager.squirrelChosen == true)
+            {
+                coyoteCounter = coyoteTime;
+                jumpCounter = 1;
+            }
+        }
+        else
+        {
+            coyoteCounter -= Time.deltaTime;
+        }
+        #endregion
+
+        #region Animation Parameters
         // set animator parameters
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
         #endregion
+
+        
     }
 
     #region Jump Logic
@@ -146,36 +173,69 @@ public class PlayerMovement : MonoBehaviour
     {
         if (coyoteCounter <= 0 && jumpCounter <= 0) return;
         if (isSwimming() && swimJumpCooldownTimer > 0) return;
-        // RE-ENABLING THE HOLD JUMP but disabled the sound effect to prevent multi plays
-        //SoundManager.instance.PlaySound(jumpSound);
+        if (onWall() || isWallsliding == true) return;
 
         // Adding the jump code into here from the original update void
         if (isGrounded())
+        {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
+        }
         else
         {
             // allowing for coyote jump when not grounded
             if (coyoteCounter > 0)
                 body.velocity = new Vector2(body.velocity.x, jumpPower);
-            // check for multi jump ability if ran out of coyote time
-            else
-            {
-                if (jumpCounter > 0)
-                {
-                    body.velocity = new Vector2(body.velocity.x, jumpPower);
-                    jumpCounter--;
-                }
-            }
         }
 
         // preventing double jumps off coyote jumps
         coyoteCounter = 0;
+
+        //removing 1 jump after jumping
+        jumpCounter--;
 
         // setting cooldown timer to jump when player hits the water
         if (isSwimming())
         {
             swimJumpCooldownTimer = swimJumpCooldown;
         }
+    }
+    #endregion
+
+    #region Wall Sliding and Jumping
+    private void WallSlide()
+    {
+        if (onWall() && !isGrounded() && horizontalInput != 0)
+        {
+            isWallsliding = true;
+            body.velocity = new Vector2(body.velocity.x, Mathf.Clamp(body.velocity.y, -wallslidingSpeed, float.MaxValue));
+        }
+        else
+            isWallsliding = false;
+    }
+
+    private void WallJump()
+    {
+        if (coyoteCounter <= 0 && jumpCounter <= 0) return;
+        if (isSwimming()) return;
+        if (isGrounded()) return;
+
+        if(isWallsliding)
+            walljumpingDirection = -Mathf.Sign(transform.localScale.x); // turns player around when they start a wall jump
+      
+        if (onWall())
+            body.velocity = new Vector2(body.velocity.x * walljumpingDirection / walljumpDistance, walljumpHeight);
+        else
+        {
+            if (coyoteCounter > 0)
+                body.velocity = new Vector2(body.velocity.x * walljumpingDirection / walljumpDistance, walljumpHeight);
+        }
+
+        // preventing double jumps off coyote jumps
+        coyoteCounter = 0;
+
+        //removing 1 jump after jumping
+        jumpCounter--;
+
     }
     #endregion
 
@@ -195,15 +255,7 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    #region Fast Fall Logic
-    private void FastFall()
-    {
-        if (!isGrounded())
-            body.velocity = new Vector2(body.velocity.x, -jumpPower);
-    }
-    #endregion
-
-    #region Collision Checks with Ground and Water
+    #region Collision Checks with Ground and Water and Wall
     // Keeping track of whether the player is on the ground or not
     private bool isGrounded()
     {
@@ -224,6 +276,12 @@ public class PlayerMovement : MonoBehaviour
         // we set these to the center of our player, the size of our player, angle to 0, direction to down, position is slightly below us, and check a ground layer
 
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.up, 0.1f, waterLayer);
+        return raycastHit.collider != null;
+    }
+
+    private bool onWall()
+    {
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null;
     }
     #endregion

@@ -159,7 +159,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -217,7 +217,6 @@ MonoBehaviour:
   - {fileID: 733848797922156888}
   - {fileID: 8365628010686981164}
   arrowSound: {fileID: 8300000, guid: 61ad38e492653d746a26931471d9029f, type: 3}
-  volume: 0.4
 --- !u!1001 &1154364727885028359
 PrefabInstance:
   m_ObjectHideFlags: 0

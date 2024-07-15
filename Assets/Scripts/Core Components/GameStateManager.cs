@@ -13,6 +13,7 @@ public class GameStateManager : MonoBehaviour
     public static bool playerLost { get; set; } = false; // game over tracker
     public static bool minigameStart { get; set; } = false; // minigame tracker
     public static bool minigameEnd { get; set; } = false; // minigame tracker
+    public static bool squirrelChosen { get; set; } = false; //squirrel power activation tracker
 
     private void Update()
     {

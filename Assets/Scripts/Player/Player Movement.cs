@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D body; // Creating the reference to the rigidbody for player movement and naming it body
     private Animator anim;     // Creating the reference to the animator for player animation, not used but helpful
     private BoxCollider2D boxCollider;     // reference to our boxcollision
-    private PlayerAttack playerAttack;
+    private PlayerAttack playerDig;
 
     [Header("Audio")]
     [SerializeField] private AudioClip jumpSound;
@@ -62,16 +62,12 @@ public class PlayerMovement : MonoBehaviour
         UIManager.FromGame = true;
 
         // re-enabling the gun for the player
-        playerAttack = GetComponent<PlayerAttack>();
-        GunPoint = transform.GetChild(0).gameObject;
-        Gun = transform.GetChild(1).gameObject;
+        playerDig = GetComponent<PlayerAttack>();
 
-        // Check the condition and enable the PlayerAttack script if true
+        // Check the condition and enable the playerDig script if true
         if (GameStateManager.Gyatt == true)
         {
-            playerAttack.enabled = true;
-            Gun.SetActive(true);
-            GunPoint.SetActive(true);
+            playerDig.enabled = true;
         }
     }
     #endregion

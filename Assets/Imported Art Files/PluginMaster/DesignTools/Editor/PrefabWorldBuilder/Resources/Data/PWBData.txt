@@ -462,7 +462,8 @@
                     "Wall",
                     "Checkpoint",
                     "Music Player",
-                    "Rhythm Button"
+                    "Rhythm Button",
+                    "Fearable"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -635,7 +636,8 @@
                 "Wall",
                 "Checkpoint",
                 "Music Player",
-                "Rhythm Button"
+                "Rhythm Button",
+                "Fearable"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -2177,7 +2179,8 @@
                     "Wall",
                     "Checkpoint",
                     "Music Player",
-                    "Rhythm Button"
+                    "Rhythm Button",
+                    "Fearable"
                 ]
             }
         ],
@@ -2212,7 +2215,8 @@
                 "Wall",
                 "Checkpoint",
                 "Music Player",
-                "Rhythm Button"
+                "Rhythm Button",
+                "Fearable"
             ]
         }
     },

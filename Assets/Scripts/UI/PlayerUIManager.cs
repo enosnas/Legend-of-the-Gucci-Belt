@@ -45,6 +45,7 @@ public class PlayerUIManager : MonoBehaviour
                 if (pauseScreen.activeInHierarchy)
                 {
                     SoundManager.instance.StopMusic();
+                    SoundManager.instance.UnPauseSound();
                     SoundManager.instance.UnPauseMainMusic();
                     PauseGame(false);
                 }
@@ -52,6 +53,7 @@ public class PlayerUIManager : MonoBehaviour
                 else
                 {
                     SoundManager.instance.PauseMainMusic();
+                    SoundManager.instance.PauseSound();
                     SoundManager.instance.PlayPauseMusic();
                     PauseGame(true);
                 }
@@ -77,6 +79,7 @@ public class PlayerUIManager : MonoBehaviour
         gameOverScreen.SetActive(true);
         GameStateManager.playerLost = true;
         SoundManager.instance.StopMusic();
+        SoundManager.instance.StopSound();
         SoundManager.instance.StopMainMusic();
         SoundManager.instance.PlayDeathMusic();
     }

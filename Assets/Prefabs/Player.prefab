@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: 8612837914914815810}
   - component: {fileID: 8992923445429460875}
   - component: {fileID: 5402858490875041531}
-  - component: {fileID: 1645294154026328454}
+  - component: {fileID: 3991308419892052048}
   - component: {fileID: 9068861228454602995}
+  - component: {fileID: 8221977504907371815}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -192,8 +193,9 @@ MonoBehaviour:
   iFrameDuration: 1
   numberofFlashes: 2
   components:
-  - {fileID: 1645294154026328454}
   - {fileID: 5402858490875041531}
+  - {fileID: 3991308419892052048}
+  - {fileID: 8221977504907371815}
   deathSound: {fileID: 8300000, guid: c6694a32e4ea3d747b6306151daedf22, type: 3}
   hurtSound: {fileID: 8300000, guid: 830ec217d9d035b458f59047d89529c1, type: 3}
 --- !u!114 &5402858490875041531
@@ -219,8 +221,6 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
-  jumpSound: {fileID: 8300000, guid: 7819c623b85400d41a3e6d119731dc57, type: 3}
-  volume: 0
   coyoteTime: 0.1
   wallslidingSpeed: 2
   walljumpingCooldown: 0
@@ -228,27 +228,27 @@ MonoBehaviour:
   walljumpDistance: 3
   walljumpHeight: 9
   swimJumpCooldown: 0.25
---- !u!114 &1645294154026328454
+--- !u!114 &3991308419892052048
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1833364693066981479}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d46e898b1bf71d14da044e41b10e427b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colliderDistance: 0.25
+  colliderDistance: 0.7
   boxCollider: {fileID: 2828963680112853562}
   destructLayer:
     serializedVersion: 2
-    m_Bits: 2048
-  range: 1.5
+    m_Bits: 2240
+  range: 1
   damage: 1
-  digCooldown: 1
-  digSound: {fileID: 8300000, guid: cb64f4890e2f53b43abd0563038f7cab, type: 3}
+  digCooldown: 0.5
+  digSound: {fileID: 8300000, guid: e4a22e52b464b48a4bfaa088b293c73b, type: 3}
 --- !u!95 &9068861228454602995
 Animator:
   serializedVersion: 5
@@ -270,3 +270,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8221977504907371815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833364693066981479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7411626bb830e475b9f54d91a6a816da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider: {fileID: 2828963680112853562}
+  range: 16
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 4608
+  damage: 1
+  howlCooldown: 5
+  howlSound: {fileID: 8300000, guid: 35213765a51fa406bb073bff5131cfb7, type: 3}
+  howling: 0

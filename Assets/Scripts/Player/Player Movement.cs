@@ -15,11 +15,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D body; // Creating the reference to the rigidbody for player movement and naming it body
     private Animator anim;     // Creating the reference to the animator for player animation, not used but helpful
     private BoxCollider2D boxCollider;     // reference to our boxcollision
-    private PlayerAttack playerDig;
-
-    [Header("Audio")]
-    [SerializeField] private AudioClip jumpSound;
-    [SerializeField] private float volume;
+    private PlayerDig playerDig;
+    private PlayerHowl playerHowl;
 
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime;     // how much hang time allowed in the air before unable to jump
@@ -28,23 +25,15 @@ public class PlayerMovement : MonoBehaviour
     [Header("Wall Jump/Climb")]
     [SerializeField] private float wallslidingSpeed;
     private bool isWallsliding;
-    private bool isWalljumping;
     private float walljumpingDirection;
     [SerializeField] private float walljumpingCooldown;
-    private float walljumpingCounter;
     [SerializeField] private float walljumpingDuration;
     [SerializeField] private float walljumpDistance;
     [SerializeField] private float walljumpHeight;
 
-
-
-
     [Header("Swim Jump Cooldown")]
     [SerializeField] private float swimJumpCooldown;
     private float swimJumpCooldownTimer;
-
-    private GameObject GunPoint;
-    private GameObject Gun;
 
     #region References
     // When the script is loaded/game is started the following will be called every time
@@ -57,12 +46,13 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         // Getting reference to the box collider on startup
         boxCollider = GetComponent<BoxCollider2D>();
+        playerHowl = GetComponent<PlayerHowl>();
 
         // setting game state to from game so we skip intro cutscene when going back to the main menu
         UIManager.FromGame = true;
 
-        // re-enabling the gun for the player
-        playerDig = GetComponent<PlayerAttack>();
+        // reference the dig for the player
+        playerDig = GetComponent<PlayerDig>();
 
         // Check the condition and enable the playerDig script if true
         if (GameStateManager.Gyatt == true)
@@ -90,13 +80,19 @@ public class PlayerMovement : MonoBehaviour
         //which we obtain input using the Input.GetAxis property which will be defined when left/right 
         // or a/d is pressed and changes velocity on a scale from -1 to 1 in the x axis
         // we input nothing for the y movement as we do not want vertical movement
+        if(playerHowl.howling != true)
+        {
+            if (!onWall())
+                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
-        if (!onWall())
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-
-        // slowing movement while swimming
-        if (isSwimming())
-            body.velocity = new Vector2(horizontalInput * speed/2, body.velocity.y);
+            // slowing movement while swimming
+            if (isSwimming())
+                body.velocity = new Vector2(horizontalInput * speed / 2, body.velocity.y);
+        }
+        else
+        {
+            body.velocity = Vector2.zero;
+        }
         #endregion
 
         #region Jump and Wall Jump Movement
@@ -169,7 +165,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (coyoteCounter <= 0 && jumpCounter <= 0) return;
         if (isSwimming() && swimJumpCooldownTimer > 0) return;
-        if (onWall() || isWallsliding == true) return;
+        if (isWallsliding == true) return;
 
         // Adding the jump code into here from the original update void
         if (isGrounded())
@@ -253,7 +249,7 @@ public class PlayerMovement : MonoBehaviour
 
     #region Collision Checks with Ground and Water and Wall
     // Keeping track of whether the player is on the ground or not
-    private bool isGrounded()
+    public bool isGrounded()
     {
         // this casts a virtual box in the direction 'direction' with length 'maxdistance' and checks whether there is a collision
         // if true then it returns true otherwise it returns false, we set the width to the player width for ease of checking for collision
@@ -264,7 +260,7 @@ public class PlayerMovement : MonoBehaviour
         return raycastHit.collider != null;
     }
 
-    private bool isSwimming()
+    public bool isSwimming()
     {
         // this casts a virtual box in the direction 'direction' with length 'maxdistance' and checks whether there is a collision
         // if true then it returns true otherwise it returns false, we set the width to the player width for ease of checking for collision

@@ -126,6 +126,18 @@ public class SoundManager : MonoBehaviour
     {
         effectSource.Stop();
     }
+
+    // pausing an audio clip that was set
+    public void PauseSound()
+    {
+        effectSource.Pause();
+    }
+
+    // pausing an audio clip that was set
+    public void UnPauseSound()
+    {
+        effectSource.UnPause();
+    }
     #endregion
 
     #region Menu SFX Playback Functions

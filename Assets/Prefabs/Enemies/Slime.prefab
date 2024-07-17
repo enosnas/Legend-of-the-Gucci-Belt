@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2931383038495337063}
   - component: {fileID: 265637666182167257}
   - component: {fileID: 7594955787155413604}
+  - component: {fileID: 1141529591267623765}
   m_Layer: 9
   m_Name: Slime
   m_TagString: Enemy
@@ -280,6 +281,22 @@ MonoBehaviour:
   - {fileID: 8100706833694292305}
   deathSound: {fileID: 8300000, guid: c6694a32e4ea3d747b6306151daedf22, type: 3}
   hurtSound: {fileID: 8300000, guid: 830ec217d9d035b458f59047d89529c1, type: 3}
+--- !u!114 &1141529591267623765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5117550797910783983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fd4fea7617724a8498bac7f4f9f515d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingSanity: 2
+  components: []
+  afraidSound: {fileID: 8300000, guid: c93c98ee21635634fb1b23e856123cee, type: 3}
+  fearedSound: {fileID: 8300000, guid: c6694a32e4ea3d747b6306151daedf22, type: 3}
 --- !u!1 &6661277532544916112
 GameObject:
   m_ObjectHideFlags: 0

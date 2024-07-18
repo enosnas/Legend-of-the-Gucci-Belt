@@ -463,7 +463,9 @@
                     "Checkpoint",
                     "Music Player",
                     "Rhythm Button",
-                    "Fearable"
+                    "Fearable",
+                    "Despawner",
+                    "Moving Platform"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -637,7 +639,9 @@
                 "Checkpoint",
                 "Music Player",
                 "Rhythm Button",
-                "Fearable"
+                "Fearable",
+                "Despawner",
+                "Moving Platform"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -2180,7 +2184,9 @@
                     "Checkpoint",
                     "Music Player",
                     "Rhythm Button",
-                    "Fearable"
+                    "Fearable",
+                    "Despawner",
+                    "Moving Platform"
                 ]
             }
         ],
@@ -2216,7 +2222,9 @@
                 "Checkpoint",
                 "Music Player",
                 "Rhythm Button",
-                "Fearable"
+                "Fearable",
+                "Despawner",
+                "Moving Platform"
             ]
         }
     },

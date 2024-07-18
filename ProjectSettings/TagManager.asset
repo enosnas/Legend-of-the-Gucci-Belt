@@ -11,6 +11,8 @@ TagManager:
   - Music Player
   - Rhythm Button
   - Fearable
+  - Despawner
+  - Moving Platform
   layers:
   - Default
   - TransparentFX
@@ -25,7 +27,7 @@ TagManager:
   - Projectile
   - Destructable
   - Wildlife
-  - 
+  - Moving Platform
   - 
   - 
   - 

@@ -11,13 +11,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer; // creating a reference to the ground layer that our player will be standing on
     [SerializeField] private LayerMask waterLayer; // creating a reference to the water layer that our player will be swimming through
     [SerializeField] private LayerMask wallLayer;    //creating wall layer
+    [SerializeField] private LayerMask platformLayer;
     private float horizontalInput; // storing the horizontal input of the player
     private Rigidbody2D body; // Creating the reference to the rigidbody for player movement and naming it body
     private Animator anim;     // Creating the reference to the animator for player animation, not used but helpful
     private BoxCollider2D boxCollider;     // reference to our boxcollision
     private PlayerDig playerDig;
-    private PlayerHowl playerHowl;
-
+    private MovingPlatformLeft movingPLeft;
+    private MovingPlatformRight movingPRight;
+    private bool platformRight;
+    private bool platformLeft;
+    
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime;     // how much hang time allowed in the air before unable to jump
     private float coyoteCounter;     // how long since we run off an edge 
@@ -46,7 +50,6 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         // Getting reference to the box collider on startup
         boxCollider = GetComponent<BoxCollider2D>();
-        playerHowl = GetComponent<PlayerHowl>();
 
         // setting game state to from game so we skip intro cutscene when going back to the main menu
         UIManager.FromGame = true;
@@ -56,9 +59,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Check the condition and enable the playerDig script if true
         if (GameStateManager.Gyatt == true)
-        {
             playerDig.enabled = true;
-        }
     }
     #endregion
 
@@ -80,18 +81,19 @@ public class PlayerMovement : MonoBehaviour
         //which we obtain input using the Input.GetAxis property which will be defined when left/right 
         // or a/d is pressed and changes velocity on a scale from -1 to 1 in the x axis
         // we input nothing for the y movement as we do not want vertical movement
-        if(playerHowl.howling != true)
-        {
-            if (!onWall())
-                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+        if (!onWall())
+            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
-            // slowing movement while swimming
-            if (isSwimming())
-                body.velocity = new Vector2(horizontalInput * speed / 2, body.velocity.y);
-        }
-        else
+        // slowing movement while swimming
+        if (isSwimming())
+            body.velocity = new Vector2(horizontalInput * speed / 2, body.velocity.y);
+
+        if (onPlatform())
         {
-            body.velocity = Vector2.zero;
+            if(platformRight == true)
+                body.velocity = new Vector2((horizontalInput * speed) + (movingPRight.speed + 0.01f), body.velocity.y);
+            if(platformLeft == true)
+                body.velocity = new Vector2((horizontalInput * speed) + (movingPLeft.speed + 0.01f), body.velocity.y);
         }
         #endregion
 
@@ -99,6 +101,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) || Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+
             if (GameStateManager.squirrelChosen == true)
                 WallJump();
         }
@@ -124,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
 
         #region Grounded and Swimming and Climbing Check
         // coyote timer reset or decrease when in the air and multi jump reset on ground
-        if (isGrounded())
+        if (isGrounded() || onPlatform())
         {
             coyoteCounter = coyoteTime;
             jumpCounter = 1;
@@ -168,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
         if (isWallsliding == true) return;
 
         // Adding the jump code into here from the original update void
-        if (isGrounded())
+        if (isGrounded() || onPlatform())
         {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
         }
@@ -247,7 +250,7 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    #region Collision Checks with Ground and Water and Wall
+    #region Collision Checks with Ground and Water and Wall and Platforms
     // Keeping track of whether the player is on the ground or not
     public bool isGrounded()
     {
@@ -274,6 +277,34 @@ public class PlayerMovement : MonoBehaviour
     private bool onWall()
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
+        return raycastHit.collider != null;
+    }
+
+    private bool onPlatform()
+    {
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, platformLayer);
+
+        if (raycastHit.collider != null)
+        {
+            if (raycastHit.transform.GetComponent<MovingPlatformRight>())
+            {
+                movingPRight = raycastHit.transform.GetComponent<MovingPlatformRight>();
+                platformRight = true;
+            }
+            else if (raycastHit.transform.GetComponent<MovingPlatformLeft>())
+            {
+                movingPLeft = raycastHit.transform.GetComponent<MovingPlatformLeft>();
+                platformLeft = true;
+            }
+            else
+            {
+                platformRight = false;
+                platformLeft = false;
+                movingPLeft = null;
+                movingPRight = null;
+            }
+        }
+
         return raycastHit.collider != null;
     }
     #endregion

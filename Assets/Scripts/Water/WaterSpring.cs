@@ -76,7 +76,7 @@ public class WaterSpring : MonoBehaviour
             var speed = rb.velocity;
 
             velocity += speed.y / resistance;
-            spriteRenderer.color = new Color(1, 0, 0, 0.5f);
+            //spriteRenderer.color = new Color(1, 0, 0, 0.5f);
 
             // Call the Splash method on collision
             WaterShapeController waterShapeController = spriteShapeController.GetComponent<WaterShapeController>();

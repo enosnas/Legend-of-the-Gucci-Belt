@@ -53,7 +53,7 @@ public class FearObjectMovement : MonoBehaviour
         {
             body.velocity = Vector2.zero;
         }
-        else
+        else if(collision.tag == "Despawner")
         {
             hit = true;
             boxCollider.enabled = false;

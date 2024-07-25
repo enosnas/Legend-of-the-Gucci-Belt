@@ -17,10 +17,13 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;     // Creating the reference to the animator for player animation, not used but helpful
     private BoxCollider2D boxCollider;     // reference to our boxcollision
     private PlayerDig playerDig;
+    // references to platform types for unique collisions and movement calculations
     private MovingPlatformLeft movingPLeft;
     private MovingPlatformRight movingPRight;
+    private SetMovementPlatformHorizontal movingH;
     private bool platformRight;
     private bool platformLeft;
+    private bool platformH;
     
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime;     // how much hang time allowed in the air before unable to jump
@@ -90,10 +93,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (onPlatform())
         {
-            if(platformRight == true)
+            if (platformRight == true)
                 body.velocity = new Vector2((horizontalInput * speed) + (movingPRight.speed + 0.01f), body.velocity.y);
-            if(platformLeft == true)
-                body.velocity = new Vector2((horizontalInput * speed) + (movingPLeft.speed + 0.01f), body.velocity.y);
+            else if (platformLeft == true)
+                body.velocity = new Vector2((horizontalInput * speed) + (movingPLeft.speed - 0.01f), body.velocity.y);
+            else if (platformH == true)
+            {
+                if (movingH.platformCalled == true)
+                    body.velocity = new Vector2((horizontalInput * speed) + (movingH.speedAdj + (movingH.directionM * 0.01f)), body.velocity.y);
+                else
+                    body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+            }
+
         }
         #endregion
 
@@ -290,18 +301,31 @@ public class PlayerMovement : MonoBehaviour
             {
                 movingPRight = raycastHit.transform.GetComponent<MovingPlatformRight>();
                 platformRight = true;
+                platformLeft = false;
+                platformH = false;
             }
             else if (raycastHit.transform.GetComponent<MovingPlatformLeft>())
             {
                 movingPLeft = raycastHit.transform.GetComponent<MovingPlatformLeft>();
                 platformLeft = true;
+                platformRight = false;
+                platformH = false;
+            }
+            else if(raycastHit.transform.GetComponent<SetMovementPlatformHorizontal>())
+            {
+                movingH = raycastHit.transform.GetComponent<SetMovementPlatformHorizontal>();
+                platformH = true;
+                platformRight = false;
+                platformLeft = false;
             }
             else
             {
                 platformRight = false;
                 platformLeft = false;
+                platformH = false;
                 movingPLeft = null;
                 movingPRight = null;
+                movingH = null;
             }
         }
 

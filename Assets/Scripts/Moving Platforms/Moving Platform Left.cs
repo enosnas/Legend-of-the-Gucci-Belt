@@ -38,7 +38,8 @@ public class MovingPlatformLeft : MonoBehaviour
     {
         platformLifetime = 0;
         gameObject.SetActive(false);
-        boxCollider.enabled = true;
+        if(boxCollider != null)
+            boxCollider.enabled = true;
         hit = false;
         activated = false;
     }
@@ -47,7 +48,8 @@ public class MovingPlatformLeft : MonoBehaviour
     {
         platformLifetime = 0;
         gameObject.SetActive(true);
-        boxCollider.enabled = true;
+        if(boxCollider != null)
+            boxCollider.enabled = true;
         hit = false;
         activated = true;
     }
@@ -56,7 +58,8 @@ public class MovingPlatformLeft : MonoBehaviour
     {
         platformLifetime = 0;
         gameObject.SetActive(false);
-        boxCollider.enabled = false;
+        if (boxCollider != null)
+            boxCollider.enabled = false;
         hit = true;
         activated = false;
     }

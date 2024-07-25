@@ -25,7 +25,7 @@ public class FearObjectMovement : MonoBehaviour
     {
         if (hit) return;
 
-        if (fearLevel.Feared == true)
+        if (fearLevel.feared == true)
         {
             body.isKinematic = false;
 

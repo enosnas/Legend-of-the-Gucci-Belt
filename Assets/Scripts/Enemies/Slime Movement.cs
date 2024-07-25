@@ -37,7 +37,7 @@ public class SlimeMovement : MonoBehaviour
     // change direction depending on which way it is moving
     private void MoveSlime()
     {
-        if(fearLevel.Feared != true)
+        if(fearLevel.feared != true && fearLevel.afraid != true)
         {
             Vector2 direction = (currentPointPos - (Vector2)transform.position).normalized;
             body.velocity = new Vector2(direction.x * speed, body.velocity.y);
@@ -53,6 +53,7 @@ public class SlimeMovement : MonoBehaviour
         }
         else
         {
+            anim.SetBool("running", false);
             body.velocity = Vector2.zero;
         }
     }
@@ -61,7 +62,7 @@ public class SlimeMovement : MonoBehaviour
     // by default it will move to pointR first as set in the start method
     private void CheckDirection()
     {
-        if (fearLevel.Feared != true)
+        if (fearLevel.feared != true)
         {
             if (Vector2.Distance(transform.position, currentPointPos) < 0.5f)
             {

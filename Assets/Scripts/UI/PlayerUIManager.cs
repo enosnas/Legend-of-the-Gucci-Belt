@@ -39,7 +39,7 @@ public class PlayerUIManager : MonoBehaviour
 
         if (scene.buildIndex != 0)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) && GameStateManager.playerLost != true)
             {
                 // exit pause when hitting escape again
                 if (pauseScreen.activeInHierarchy)

@@ -42,23 +42,24 @@ public class PlayerHowl : MonoBehaviour
             cooldownTimer += Time.deltaTime;
             howlTimer += Time.deltaTime;
 
-            if (Input.GetKeyDown(KeyCode.LeftShift) && cooldownTimer >= howlCooldown && canHowl())
+            if (health.dead)
             {
-                anim.SetTrigger("howl");
+                StopHowling();
+                return; // Exit update to prevent further howling checks
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canHowl())
+            {
                 PookieHowl();
-                howling = true;
                 SoundManager.instance.PlaySound(howlSound);
-                cooldownTimer = 0;
-                howlTimer = 0;
             }
 
             if(howlTimer >= howlDuration)
             {
-                anim.SetBool("howl", false);
-                howling = false;
+                StopHowling();
                 cooldownTimer += Time.deltaTime;
             }
-            //Debug.Log("Dug:" + cooldownTimer);
+            Debug.Log("howl:" + howling);
         }
     }
 
@@ -98,18 +99,24 @@ public class PlayerHowl : MonoBehaviour
     {
         if (HowlDetect() && fearLevel != null)
             fearLevel.TakeSanityDamage(damage);
+
+        anim.SetTrigger("howl");
+        howling = true;
+        cooldownTimer = 0;
+        howlTimer = 0;
     }
 
     // logic to allow attacking and to attack and reset cooldown timer
     public bool canHowl()
     {
-        return cooldownTimer >= howlCooldown && health.dead == false && playerMove.isGrounded() == true && playerMove.isSwimming() == false;
+        return cooldownTimer >= howlCooldown && health.dead == false && playerMove.isGrounded() == true && playerMove.isSwimming() == false && howling == false;
     }
 
     //setting animation back to false for use in animation event
     // still having issues with jump overriding the attack animation and reference here when you come back to fix (fix the bools)
     private void StopHowling()
     {
-        anim.SetBool("howl", false);
+        anim.ResetTrigger("howl");
+        howling = false;
     }
 }

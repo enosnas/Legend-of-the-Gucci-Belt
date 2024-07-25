@@ -8,7 +8,8 @@ public class FearLevel : MonoBehaviour
     [SerializeField] private float startingSanity;
     public float currentSanity { get; private set; }
     private Animator anim;
-    public bool Feared { get; private set; }
+    public bool feared { get; private set; }
+    public bool afraid { get; private set; }
 
     [Header("Components")]
     [SerializeField] private Behaviour[] components;
@@ -30,16 +31,19 @@ public class FearLevel : MonoBehaviour
     {
         currentSanity = Mathf.Clamp(currentSanity - _damage, 0, startingSanity);
 
-        if (currentSanity > 0)
+        if (currentSanity > 0 && !afraid)
         {
-            anim.SetTrigger("afraid");
+            anim.SetBool("afraid",true);
+            afraid = true;
             SoundManager.instance.PlaySound(afraidSound);
         }
         else
         {
-            if (!Feared)
+            if (!feared)
             {
-                anim.SetTrigger("feared");
+                anim.SetBool("afraid", false);
+                anim.SetBool("feared",true);
+                afraid = false;
 
                 // disabling selected items when feared, such as box collider
                 if(components != null)
@@ -48,7 +52,7 @@ public class FearLevel : MonoBehaviour
                         component.enabled = false;
                 }
 
-                Feared = true;
+                feared = true;
                 SoundManager.instance.PlaySound(fearedSound);
             }
 

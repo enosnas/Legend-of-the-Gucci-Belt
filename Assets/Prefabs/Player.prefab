@@ -211,6 +211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 11.5
+  climbSpeed: 7
   jumpPower: 12
   groundLayer:
     serializedVersion: 2
@@ -224,6 +225,9 @@ MonoBehaviour:
   platformLayer:
     serializedVersion: 2
     m_Bits: 8192
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 16384
   coyoteTime: 0.1
   wallslidingSpeed: 2
   walljumpingCooldown: 0

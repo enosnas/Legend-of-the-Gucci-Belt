@@ -13,6 +13,7 @@ TagManager:
   - Fearable
   - Despawner
   - Moving Platform
+  - Ladder Exit
   layers:
   - Default
   - TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   - Destructable
   - Wildlife
   - Moving Platform
-  - 
+  - Ladder
   - 
   - 
   - 

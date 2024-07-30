@@ -39,16 +39,12 @@ public class PlayerDig : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0) && cooldownTimer >= digCooldown && canDig() && GameStateManager.Paused != true)
             {
-                anim.SetTrigger("attacking");
                 GopherDig();
                 SoundManager.instance.PlaySound(digSound);
-                cooldownTimer = 0;
             }
             else
             {
-                anim.SetBool("attacking", false);
-                anim.SetBool("attackingUp", false);
-                anim.SetBool("attackingDown", false);
+                StopDigging();
                 cooldownTimer += Time.deltaTime;
             }
             //Debug.Log("Dug:" + cooldownTimer);
@@ -111,6 +107,9 @@ public class PlayerDig : MonoBehaviour
     {
         if (DestructionDetect() && destructHealth != null)
                 destructHealth.TakeDamage(damage);
+
+        anim.SetTrigger("attacking");
+        cooldownTimer = 0;
     }
 
     // logic to allow attacking and to attack and reset cooldown timer
@@ -124,5 +123,7 @@ public class PlayerDig : MonoBehaviour
     private void StopDigging()
     {
         anim.SetBool("attacking", false);
+        anim.SetBool("attackingUp", false);
+        anim.SetBool("attackingDown", false);
     }
 }

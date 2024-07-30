@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
     // Creating a speed value to increase the player movement speed from the default -1 to 1
     // Also make it serialized which allows us to change it with an input field in the player object menu
     [SerializeField] private float speed;
+    [SerializeField] private float climbSpeed;
     [SerializeField] private float jumpPower;
     private int jumpCounter = 1;
 
@@ -12,7 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask waterLayer; // creating a reference to the water layer that our player will be swimming through
     [SerializeField] private LayerMask wallLayer;    //creating wall layer
     [SerializeField] private LayerMask platformLayer;
+    [SerializeField] private LayerMask ladderLayer;
     private float horizontalInput; // storing the horizontal input of the player
+    private float verticalInput;
     private Rigidbody2D body; // Creating the reference to the rigidbody for player movement and naming it body
     private Animator anim;     // Creating the reference to the animator for player animation, not used but helpful
     private BoxCollider2D boxCollider;     // reference to our boxcollision
@@ -21,10 +24,18 @@ public class PlayerMovement : MonoBehaviour
     private MovingPlatformLeft movingPLeft;
     private MovingPlatformRight movingPRight;
     private SetMovementPlatformHorizontal movingH;
+    private SetMovementPlatform movingV;
     private bool platformRight;
     private bool platformLeft;
     private bool platformH;
-    
+    private bool platformV;
+    //ladder values
+    private float ladderPos;
+    private bool climbingLadder;
+    private bool ladderExit;
+    private bool snappingToLadder = false;
+    private float snapSpeed = 10f; // Adjust this value to control the speed of snapping to the ladder
+
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime;     // how much hang time allowed in the air before unable to jump
     private float coyoteCounter;     // how long since we run off an edge 
@@ -72,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
         #region Horizontal Movement
         // Storing the horiztonal input in a float value for ease of use 
         horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
 
         // flipping the player's direction when moving left or right
         if (horizontalInput > 0.01f)
@@ -103,6 +115,13 @@ public class PlayerMovement : MonoBehaviour
                     body.velocity = new Vector2((horizontalInput * speed) + (movingH.speedAdj + (movingH.directionM * 0.01f)), body.velocity.y);
                 else
                     body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+            }
+            else if (platformV == true)
+            {
+                if (movingV.platformCalled == true)
+                {
+                    body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+                }
             }
 
         }
@@ -165,6 +184,70 @@ public class PlayerMovement : MonoBehaviour
         }
         #endregion
 
+        #region Ladder Movement
+        // player clicks button to snap on ladder -> get 0grav and stops vertical movement -> use w/s to go up and down
+        // -> allowed to jump off ladder to exit or climb to top or bottom to exit -> holding direction while going up or down
+        // changes exit point?
+
+        if (onLadder())
+        {
+            if (Input.GetKey(KeyCode.E))
+            {
+                body.gravityScale = 0;
+                snappingToLadder = true;
+                climbingLadder = true;
+            }
+
+        if (climbingLadder == true)
+        {
+            if (snappingToLadder)
+            {
+                // Smoothly move the player to the ladder's x position
+                Vector3 targetPosition = new Vector3(ladderPos, transform.position.y, transform.position.z);
+                transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * snapSpeed);
+
+                // Check if the player has reached the ladder's x position
+                if (Mathf.Abs(transform.position.x - ladderPos) < 0.01f)
+                {
+                    transform.position = targetPosition; // Snap to the exact position
+                    snappingToLadder = false;
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(verticalInput) > 0f)
+                {
+                    body.velocity = new Vector2(0, climbSpeed * verticalInput);
+                }
+                else
+                {
+                    body.velocity = Vector2.zero;
+                }
+
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    body.gravityScale = 2.1f;
+                    climbingLadder = false;
+                    body.velocity = new Vector2(body.velocity.x, jumpPower);
+                }
+
+                if (horizontalInput != 0 && ladderExit == true)
+                {
+                    body.gravityScale = 2.1f;
+                    climbingLadder = false;
+                    body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+                }
+            }
+        }
+        }
+        else
+        {
+            //body.gravityScale = 2.1f;
+            climbingLadder = false;
+            snappingToLadder = false;
+        }
+        #endregion
+
         #region Animation Parameters
         // set animator parameters
         anim.SetBool("run", horizontalInput != 0);
@@ -173,6 +256,23 @@ public class PlayerMovement : MonoBehaviour
 
         
     }
+
+    #region Ladder Entrance/Exit Check
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.tag == "Ladder Exit")
+        {
+            ladderExit = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform.tag == "Ladder Exit")
+        {
+            ladderExit = false;
+        }
+    }
+    #endregion
 
     #region Jump Logic
     private void Jump()
@@ -222,8 +322,7 @@ public class PlayerMovement : MonoBehaviour
     private void WallJump()
     {
         if (coyoteCounter <= 0 && jumpCounter <= 0) return;
-        if (isSwimming()) return;
-        if (isGrounded()) return;
+        if (isSwimming() || isGrounded() || onLadder()) return;
 
         if(isWallsliding)
             walljumpingDirection = -Mathf.Sign(transform.localScale.x); // turns player around when they start a wall jump
@@ -261,7 +360,7 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    #region Collision Checks with Ground and Water and Wall and Platforms
+    #region Collision Checks with Ground and Water and Wall and Platforms and Ladders
     // Keeping track of whether the player is on the ground or not
     public bool isGrounded()
     {
@@ -303,6 +402,7 @@ public class PlayerMovement : MonoBehaviour
                 platformRight = true;
                 platformLeft = false;
                 platformH = false;
+                platformV = false;
             }
             else if (raycastHit.transform.GetComponent<MovingPlatformLeft>())
             {
@@ -310,11 +410,21 @@ public class PlayerMovement : MonoBehaviour
                 platformLeft = true;
                 platformRight = false;
                 platformH = false;
+                platformV = false;
             }
             else if(raycastHit.transform.GetComponent<SetMovementPlatformHorizontal>())
             {
                 movingH = raycastHit.transform.GetComponent<SetMovementPlatformHorizontal>();
                 platformH = true;
+                platformV = false;
+                platformRight = false;
+                platformLeft = false;
+            }
+            else if (raycastHit.transform.GetComponent<SetMovementPlatform>())
+            {
+                movingV = raycastHit.transform.GetComponent<SetMovementPlatform>();
+                platformH = false;
+                platformV = true;
                 platformRight = false;
                 platformLeft = false;
             }
@@ -323,11 +433,29 @@ public class PlayerMovement : MonoBehaviour
                 platformRight = false;
                 platformLeft = false;
                 platformH = false;
+                platformV = false;
                 movingPLeft = null;
                 movingPRight = null;
                 movingH = null;
             }
         }
+
+        return raycastHit.collider != null;
+    }
+
+    private bool onLadder()
+    {
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center,
+            boxCollider.bounds.size,
+            0,
+            Vector2.down,
+            0.1f,
+            ladderLayer);
+
+        if (raycastHit.collider != null)
+            ladderPos = raycastHit.transform.position.x;
+
+
 
         return raycastHit.collider != null;
     }

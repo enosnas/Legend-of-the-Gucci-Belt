@@ -465,7 +465,8 @@
                     "Rhythm Button",
                     "Fearable",
                     "Despawner",
-                    "Moving Platform"
+                    "Moving Platform",
+                    "Ladder Exit"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -641,7 +642,8 @@
                 "Rhythm Button",
                 "Fearable",
                 "Despawner",
-                "Moving Platform"
+                "Moving Platform",
+                "Ladder Exit"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -2186,7 +2188,8 @@
                     "Rhythm Button",
                     "Fearable",
                     "Despawner",
-                    "Moving Platform"
+                    "Moving Platform",
+                    "Ladder Exit"
                 ]
             }
         ],
@@ -2224,7 +2227,8 @@
                 "Rhythm Button",
                 "Fearable",
                 "Despawner",
-                "Moving Platform"
+                "Moving Platform",
+                "Ladder Exit"
             ]
         }
     },

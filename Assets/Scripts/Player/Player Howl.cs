@@ -59,7 +59,7 @@ public class PlayerHowl : MonoBehaviour
                 StopHowling();
                 cooldownTimer += Time.deltaTime;
             }
-            Debug.Log("howl:" + howling);
+            //Debug.Log("howl:" + howling);
         }
     }
 

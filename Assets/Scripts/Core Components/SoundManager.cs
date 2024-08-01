@@ -118,7 +118,10 @@ public class SoundManager : MonoBehaviour
     // play an audio clip once
     public void PlaySound(AudioClip _sound)
     {
-        effectSource.PlayOneShot(_sound);
+        if(_sound != null)
+            effectSource.PlayOneShot(_sound);
+        else
+            Debug.LogWarning("SFX AudioClip is not assigned.");
     }
 
     // stop playing an audio clip that was set
@@ -144,7 +147,10 @@ public class SoundManager : MonoBehaviour
     // play a menu audio clip once
     public void PlayMenuSound(AudioClip _sound)
     {
-        menuSource.PlayOneShot(_sound);
+        if (_sound != null)
+            menuSource.PlayOneShot(_sound);
+        else
+            Debug.LogWarning("Menu Sound AudioClip is not assigned.");
     }
 
     // stop playing a menu audio clip that was set
@@ -160,6 +166,8 @@ public class SoundManager : MonoBehaviour
     {
         if (musicSource != null && !musicSource.isPlaying)
             musicSource.PlayOneShot(pauseMusic);
+        else
+            Debug.LogWarning("Pause Music AudioClip is not assigned.");
     }
 
     // Play the death music
@@ -167,6 +175,8 @@ public class SoundManager : MonoBehaviour
     {
         if (musicSource != null && !musicSource.isPlaying)
             musicSource.PlayOneShot(deathMusic);
+        else
+            Debug.LogWarning("Death Music AudioClip is not assigned.");
     }
 
     // Stop the level music
@@ -207,18 +217,24 @@ public class SoundManager : MonoBehaviour
     {
         if (mainmusicSource != null && !mainmusicSource.isPlaying)
             mainmusicSource.PlayOneShot(mainMusic);
+        else
+            Debug.LogWarning("Main Music AudioClip is not assigned.");
     }
 
     public void PlayLevel2Music()
     {
         if(mainmusicSource != null && !mainmusicSource.isPlaying)
             mainmusicSource.PlayOneShot(level2Music);
+        else
+            Debug.LogWarning("Level 2 Music AudioClip is not assigned.");
     }
 
     public void PlayFinishMusic()
     {
         if (mainmusicSource != null && !mainmusicSource.isPlaying)
             mainmusicSource.PlayOneShot(finishMusic);
+        else
+            Debug.LogWarning("Finish Music AudioClip is not assigned.");
     }
     #endregion
 
@@ -230,6 +246,8 @@ public class SoundManager : MonoBehaviour
             mainmusicSource.clip = mainMenuMusic;
             mainmusicSource.Play();
         }
+        else
+            Debug.LogWarning("Main Menu Music AudioClip is not assigned.");
     }
 
     public void SkipMainMenuMusic()
@@ -249,6 +267,8 @@ public class SoundManager : MonoBehaviour
     {
         if (minigamemusicSource != null && !minigamemusicSource.isPlaying)
             minigamemusicSource.PlayOneShot(rhythmMusic1);
+        else
+            Debug.LogWarning("Rhythm Music AudioClip is not assigned.");
     }
     #endregion
 }

@@ -7,7 +7,7 @@ public class PlatformSpawnerRight : MonoBehaviour
     [SerializeField] private GameObject[] platforms;
     private float cooldownTimer;
 
-    private void Start()
+    private void Awake()
     {
         InitializePlatforms(); // Ensure platforms are properly initialized
     }

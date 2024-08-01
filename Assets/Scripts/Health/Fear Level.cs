@@ -10,6 +10,7 @@ public class FearLevel : MonoBehaviour
     private Animator anim;
     public bool feared { get; private set; }
     public bool afraid { get; private set; }
+    public int howlDirection;
 
     [Header("Components")]
     [SerializeField] private Behaviour[] components;
@@ -33,7 +34,6 @@ public class FearLevel : MonoBehaviour
 
         if (currentSanity > 0 && !afraid)
         {
-            anim.SetBool("afraid",true);
             afraid = true;
             SoundManager.instance.PlaySound(afraidSound);
         }
@@ -41,8 +41,6 @@ public class FearLevel : MonoBehaviour
         {
             if (!feared)
             {
-                anim.SetBool("afraid", false);
-                anim.SetBool("feared",true);
                 afraid = false;
 
                 // disabling selected items when feared, such as box collider

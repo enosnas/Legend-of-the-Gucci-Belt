@@ -25,6 +25,7 @@ public class PlayerHowl : MonoBehaviour
     private float howlTimer = Mathf.Infinity;
     private float howlDuration = 4.672f;
     public bool howling;
+    private int howlDirection;
 
     private void Awake()
     {
@@ -59,11 +60,11 @@ public class PlayerHowl : MonoBehaviour
                 StopHowling();
                 cooldownTimer += Time.deltaTime;
             }
-            //Debug.Log("howl:" + howling);
+            //Debug.Log("howl direction:" + howlDirection);
         }
     }
 
-    #region Digging RayCast
+    #region Howling RayCast
     private bool HowlDetect()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center,
@@ -74,7 +75,10 @@ public class PlayerHowl : MonoBehaviour
            enemyLayer);
 
         if (hit.collider != null)
+        {
             fearLevel = hit.transform.GetComponent<FearLevel>();
+            howlDirection = (int)Mathf.Sign(transform.position.x - hit.transform.position.x);
+        }
 
 
         return hit.collider != null;
@@ -98,7 +102,10 @@ public class PlayerHowl : MonoBehaviour
     private void PookieHowl()
     {
         if (HowlDetect() && fearLevel != null)
+        {
             fearLevel.TakeSanityDamage(damage);
+            fearLevel.howlDirection = howlDirection;
+        }
 
         anim.SetTrigger("howl");
         howling = true;

@@ -466,7 +466,10 @@
                     "Fearable",
                     "Despawner",
                     "Moving Platform",
-                    "Ladder Exit"
+                    "Ladder Exit",
+                    "Pressure Plate",
+                    "Usable",
+                    "Wildlife"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -643,7 +646,10 @@
                 "Fearable",
                 "Despawner",
                 "Moving Platform",
-                "Ladder Exit"
+                "Ladder Exit",
+                "Pressure Plate",
+                "Usable",
+                "Wildlife"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -2189,7 +2195,10 @@
                     "Fearable",
                     "Despawner",
                     "Moving Platform",
-                    "Ladder Exit"
+                    "Ladder Exit",
+                    "Pressure Plate",
+                    "Usable",
+                    "Wildlife"
                 ]
             }
         ],
@@ -2228,7 +2237,10 @@
                 "Fearable",
                 "Despawner",
                 "Moving Platform",
-                "Ladder Exit"
+                "Ladder Exit",
+                "Pressure Plate",
+                "Usable",
+                "Wildlife"
             ]
         }
     },

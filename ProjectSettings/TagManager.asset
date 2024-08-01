@@ -14,6 +14,9 @@ TagManager:
   - Despawner
   - Moving Platform
   - Ladder Exit
+  - Pressure Plate
+  - Usable
+  - Wildlife
   layers:
   - Default
   - TransparentFX
@@ -30,7 +33,7 @@ TagManager:
   - Wildlife
   - Moving Platform
   - Ladder
-  - 
+  - Pressure Plate
   - 
   - 
   - 

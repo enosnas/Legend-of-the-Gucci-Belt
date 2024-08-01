@@ -11,7 +11,7 @@ public class PlatformButton : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private LayerMask playerLayer;
 
-    private void Start()
+    private void Awake()
     {
         anim = GetComponent<Animator>();
         parent = transform.parent.gameObject;

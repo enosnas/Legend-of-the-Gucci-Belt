@@ -27,10 +27,10 @@ public class LadderHandler : MonoBehaviour
             bottomChild.transform.position = new Vector3(transform.position.x, bottomY+0.1f, transform.position.z);
 
             // Mark the scene as dirty so changes are saved
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(topChild);
             UnityEditor.EditorUtility.SetDirty(bottomChild);
-#endif
+            #endif
         }
         else
         {

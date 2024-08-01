@@ -12,7 +12,7 @@ public class MovingPlatformRight : MonoBehaviour
     private BoxCollider2D boxCollider;
     private Rigidbody2D body;
 
-    private void Start()
+    private void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
         body = GetComponent<Rigidbody2D>();

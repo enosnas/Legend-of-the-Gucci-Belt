@@ -295,6 +295,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4608
   damage: 1
-  howlCooldown: 5
+  howlCooldown: 6
   howlSound: {fileID: 8300000, guid: 35213765a51fa406bb073bff5131cfb7, type: 3}
   howling: 0

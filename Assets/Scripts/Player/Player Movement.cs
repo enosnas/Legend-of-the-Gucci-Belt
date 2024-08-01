@@ -231,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
                     body.velocity = new Vector2(body.velocity.x, jumpPower);
                 }
 
-                if (horizontalInput != 0 && ladderExit == true)
+                if (horizontalInput != 0 || verticalInput != 0 && ladderExit == true)
                 {
                     body.gravityScale = 2.1f;
                     climbingLadder = false;
@@ -253,7 +253,6 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
         #endregion
-
         
     }
 

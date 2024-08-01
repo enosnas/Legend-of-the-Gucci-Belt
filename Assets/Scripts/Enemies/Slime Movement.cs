@@ -12,7 +12,7 @@ public class SlimeMovement : MonoBehaviour
     private Vector2 pointLInitialPos;
     private Vector2 currentPointPos;
 
-    private void Start()
+    private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();

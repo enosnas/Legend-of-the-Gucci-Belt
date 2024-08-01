@@ -18,7 +18,7 @@ public class SetMovementPlatformHorizontal : MonoBehaviour
     public float speedAdj;
 
     // setting movement positions for the platform
-    private void Start()
+    private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();

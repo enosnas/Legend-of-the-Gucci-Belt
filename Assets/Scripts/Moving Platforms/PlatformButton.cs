@@ -29,18 +29,6 @@ public class PlatformButton : MonoBehaviour
 
         //Debug.Log("pressed:" + platform.platformCalled);
     }
-    /*
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.CompareTag("Player"))
-        {
-            if(Input.GetKeyDown(KeyCode.E) && platform.platformCalled == false)
-            {
-                anim.SetBool("pressed", true);
-                platform.platformCalled = true;
-            }
-        }
-    }*/
 
     //player detection for button press using raycast
     private void ButtonPress()

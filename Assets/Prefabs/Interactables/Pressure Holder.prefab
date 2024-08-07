@@ -200,6 +200,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 4631867381329663552}
   boxCollider: {fileID: 1590220719467438651}
+  doorOpening: {fileID: 8300000, guid: 3d5237c190313482ea834a59adb9f465, type: 3}
+  doorClosing: {fileID: 8300000, guid: 1d215051f52644fb9ae17d40741c700d, type: 3}
 --- !u!1 &8781197905679895590
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,8 +347,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider: {fileID: 5308165295347446884}
-  doorOpening: {fileID: 8300000, guid: 3d5237c190313482ea834a59adb9f465, type: 3}
-  doorClosing: {fileID: 8300000, guid: 1d215051f52644fb9ae17d40741c700d, type: 3}
   doorOpen: 0
   doorClose: 0
 --- !u!95 &5411511370090585976

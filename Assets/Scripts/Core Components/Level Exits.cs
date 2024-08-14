@@ -19,12 +19,13 @@ public class levelExit : MonoBehaviour
             {
                //GameStateManager.Gyatt = true;
                 SceneManager.LoadScene(2);
+                GameStateManager.IsGameCompleted = true;
             }
 
-            else if (scene.buildIndex == 2)
+            else if (scene.buildIndex == 3)
             {
                 //GameStateManager.IsGameCompleted = true;
-                SceneManager.LoadScene(3);
+                SceneManager.LoadScene(0);
             }
         }
     }

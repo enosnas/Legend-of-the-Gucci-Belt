@@ -192,4 +192,12 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
+    #region PLaytest entrance
+    public void Playtest()
+    {
+        SceneManager.LoadScene(3);
+        PauseGame(false);
+    }
+    #endregion
+
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -31,9 +32,13 @@ public class PlayerMovement : MonoBehaviour
     private bool platformV;
     //ladder values
     private float ladderPos;
+    private float ladderExitPos;
     private bool climbingLadder;
     private bool ladderExit;
+    private bool descendingLadder;
     private bool snappingToLadder = false;
+    private bool descentSnap = false;
+    private float descentY;
     private float snapSpeed = 10f; // Adjust this value to control the speed of snapping to the ladder
 
     [Header("Coyote Time")]
@@ -77,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region Update
     // Every frame will be recorded and take input with update
     private void Update()
     {
@@ -123,8 +129,8 @@ public class PlayerMovement : MonoBehaviour
                     body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
                 }
             }
-
         }
+        //update end
         #endregion
 
         #region Jump and Wall Jump Movement
@@ -189,63 +195,87 @@ public class PlayerMovement : MonoBehaviour
         // -> allowed to jump off ladder to exit or climb to top or bottom to exit -> holding direction while going up or down
         // changes exit point?
 
+        if (Input.GetKey(KeyCode.E))
+        {
+            body.gravityScale = 0;
+
+            if (!ladderExit)
+            {
+                snappingToLadder = true;
+                descentSnap = false;
+            }
+            else if (ladderExit)
+            {
+                descentSnap = true;
+                snappingToLadder = false;
+                descentY = transform.position.y - 1.5f;
+            }
+
+            climbingLadder = true;
+        }
+
         if (onLadder())
         {
-            if (Input.GetKey(KeyCode.E))
+            if (climbingLadder)
             {
-                body.gravityScale = 0;
-                snappingToLadder = true;
-                climbingLadder = true;
-            }
-
-        if (climbingLadder == true)
-        {
-            if (snappingToLadder)
-            {
-                // Smoothly move the player to the ladder's x position
-                Vector3 targetPosition = new Vector3(ladderPos, transform.position.y, transform.position.z);
-                transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * snapSpeed);
-
-                // Check if the player has reached the ladder's x position
-                if (Mathf.Abs(transform.position.x - ladderPos) < 0.01f)
+                if (snappingToLadder || descentSnap)
                 {
-                    transform.position = targetPosition; // Snap to the exact position
-                    snappingToLadder = false;
-                }
-            }
-            else
-            {
-                if (Mathf.Abs(verticalInput) > 0f)
-                {
-                    body.velocity = new Vector2(0, climbSpeed * verticalInput);
+                    // Disable player movement during snapping
+                    horizontalInput = 0;
+                    verticalInput = 0;
+
+                    // Smoothly move the player to the ladder's x position
+                    Vector3 targetPosition = snappingToLadder
+                        ? new Vector3(ladderPos, transform.position.y, transform.position.z)
+                        : new Vector3(ladderPos, descentY, transform.position.z);
+
+                    transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * snapSpeed);
+
+                    // Check if the player has reached the target position
+                    if (Mathf.Abs(transform.position.x - ladderPos) < 0.01f &&
+                        (!descentSnap || Mathf.Abs(transform.position.y - descentY) < 0.01f))
+                    {
+                        transform.position = targetPosition; // Snap to the exact position
+                        snappingToLadder = false;
+                        descentSnap = false;
+                        boxCollider.enabled = true;
+                    }
                 }
                 else
                 {
-                    body.velocity = Vector2.zero;
-                }
+                    // Allow movement only after snapping is complete
+                    if (Mathf.Abs(verticalInput) > 0f)
+                    {
+                        body.velocity = new Vector2(0, climbSpeed * verticalInput);
+                    }
+                    else
+                    {
+                        body.velocity = Vector2.zero;
+                    }
 
-                if (Input.GetKey(KeyCode.Space))
-                {
-                    body.gravityScale = 2.1f;
-                    climbingLadder = false;
-                    body.velocity = new Vector2(body.velocity.x, jumpPower);
-                }
+                    if (Input.GetKey(KeyCode.Space))
+                    {
+                        body.gravityScale = 2.1f;
+                        climbingLadder = false;
+                        body.velocity = new Vector2(body.velocity.x, jumpPower);
+                    }
 
-                if (horizontalInput != 0 || verticalInput != 0 && ladderExit == true)
-                {
-                    body.gravityScale = 2.1f;
-                    climbingLadder = false;
-                    body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+                    if (horizontalInput != 0)
+                    {
+                        body.gravityScale = 2.1f;
+                        climbingLadder = false;
+                        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+                    }
                 }
             }
         }
-        }
         else
         {
-            //body.gravityScale = 2.1f;
             climbingLadder = false;
             snappingToLadder = false;
         }
+
+
         #endregion
 
         #region Animation Parameters
@@ -255,8 +285,10 @@ public class PlayerMovement : MonoBehaviour
         #endregion
         
     }
+    //update region end
+    #endregion
 
-    #region Ladder Entrance/Exit Check
+    #region Ladder Entrance/Exit Check and Descent
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.tag == "Ladder Exit")
@@ -374,12 +406,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isSwimming()
     {
-        // this casts a virtual box in the direction 'direction' with length 'maxdistance' and checks whether there is a collision
-        // if true then it returns true otherwise it returns false, we set the width to the player width for ease of checking for collision
-        // first argument is the origin of the box, then the size of the box, followed by the angle of rotation, direction, position, and specific layer to check
-        // we set these to the center of our player, the size of our player, angle to 0, direction to down, position is slightly below us, and check a ground layer
-
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.up, 0.1f, waterLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, waterLayer);
         return raycastHit.collider != null;
     }
 
@@ -451,10 +478,20 @@ public class PlayerMovement : MonoBehaviour
             0.1f,
             ladderLayer);
 
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center,
+    boxCollider.bounds.size,
+    0,
+    Vector2.down,
+    0.1f,
+    ladderLayer);
+
         if (raycastHit.collider != null)
             ladderPos = raycastHit.transform.position.x;
-
-
+        else if(raycastHit.collider == null)
+        {
+            climbingLadder = false;
+            body.gravityScale = 2.1f;
+        }
 
         return raycastHit.collider != null;
     }

@@ -24,6 +24,7 @@ public class PlayerRespawn : MonoBehaviour
         {
             //show game over screen
             uiManager.GameOver();
+            GameStateManager.playerLost = true;
             return;
         }
         else
@@ -35,7 +36,8 @@ public class PlayerRespawn : MonoBehaviour
             playerHealth.Respawn();
 
             // Restart the level music
-            SoundManager.instance.PlayMainMusic();
+            //SoundManager.instance.PlayMainMusic();
+
         }
     }
 

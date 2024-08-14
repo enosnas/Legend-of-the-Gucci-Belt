@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerDig : MonoBehaviour
 {
@@ -23,11 +24,13 @@ public class PlayerDig : MonoBehaviour
     private Health health;
     private float cooldownTimer = Mathf.Infinity;
 
+    Scene scene;
     private void Awake()
     {
         anim = GetComponent<Animator>();
         health = GetComponent<Health>();
         boxCollider = GetComponent<BoxCollider2D>();
+        scene = SceneManager.GetActiveScene();
     }
 
     // letting the player attack when left clicking

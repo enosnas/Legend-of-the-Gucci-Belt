@@ -66,7 +66,6 @@ public class Health : MonoBehaviour
                 anim.SetTrigger("die");
 
                 dead = true;
-                GameStateManager.playerLost = true;
                 SoundManager.instance.PlaySound(deathSound);
             }
             

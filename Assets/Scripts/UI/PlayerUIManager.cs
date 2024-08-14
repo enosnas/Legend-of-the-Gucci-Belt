@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,9 +15,19 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Pause Screen")]
     [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private GameObject controlScreen;
     [SerializeField] private AudioClip pauseSound;
     [SerializeField] private AudioClip menuconfirmSound;
     [SerializeField] private AudioClip sfxtestSound;
+
+    [Header("Speedrun Timer")]
+    [SerializeField] private GameObject timer;
+
+    [Header("Pause Screen Items")]
+    [SerializeField] private Behaviour[] options;
+
+    [Header("Controls Screen Items")]
+    [SerializeField] private Behaviour[] controls;
 
     // [Header("Finish Screen")]
     // [SerializeField] private GameObject finishScreen;
@@ -26,6 +37,8 @@ public class PlayerUIManager : MonoBehaviour
     {
         gameOverScreen.SetActive(false);
         pauseScreen.SetActive(false);
+        controlScreen.SetActive(false);
+        timer.SetActive(false);
     }
 
     // activating and deactivating pause when hitting escape, changing audio as well
@@ -39,7 +52,7 @@ public class PlayerUIManager : MonoBehaviour
 
         if (scene.buildIndex != 0)
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && GameStateManager.playerLost != true)
+            if (Input.GetKeyDown(KeyCode.Escape) && GameStateManager.playerLost != true && controlScreen.activeInHierarchy == false)
             {
                 // exit pause when hitting escape again
                 if (pauseScreen.activeInHierarchy)
@@ -59,6 +72,11 @@ public class PlayerUIManager : MonoBehaviour
                 }
             }
         }
+
+        if(scene.buildIndex == 1)
+            timer.SetActive(true);
+        else
+            timer.SetActive(false);
         #endregion
 
         #region Finish Game Check
@@ -143,6 +161,18 @@ public class PlayerUIManager : MonoBehaviour
     {
         SoundManager.instance.PlayMenuSound(menuconfirmSound);
         SoundManager.instance.ChangeMenuVolume(0.1f);
+    }
+
+    public void Controls()
+    {
+        pauseScreen.SetActive(false);
+        controlScreen.SetActive(true);
+    }
+
+    public void ReturnPause()
+    {
+        controlScreen.SetActive(false);
+        pauseScreen.SetActive(true);
     }
     #endregion
 

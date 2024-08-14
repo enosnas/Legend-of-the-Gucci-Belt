@@ -691,11 +691,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuMusic: {fileID: 8300000, guid: ade2bbf4d64d7c1498d39fc6bcb00d70, type: 3}
-  mainMusic: {fileID: 8300000, guid: 307514fb67c27734fa70adfaf8a72452, type: 3}
   pauseMusic: {fileID: 8300000, guid: 01eadb4784f219a4aa9e7edfa13c2da8, type: 3}
   deathMusic: {fileID: 8300000, guid: c46995245fe0fa148b0268a9629e7636, type: 3}
   finishMusic: {fileID: 8300000, guid: 38b01951ffdcf1e4fbf44ceca19ba5ca, type: 3}
+  mainMusic: {fileID: 8300000, guid: 307514fb67c27734fa70adfaf8a72452, type: 3}
   level2Music: {fileID: 8300000, guid: b7b0d5c1b237d1c40bb36856717a2abb, type: 3}
+  playtestMusic: {fileID: 8300000, guid: 48b3b324cf26ae4439152812d3a13fdb, type: 3}
   rhythmMusic1: {fileID: 8300000, guid: a44d1b15a0f8c40af8df728b85f68c11, type: 3}
 --- !u!82 &2757312067527719978
 AudioSource:

@@ -23,7 +23,7 @@ public class LadderHandler : MonoBehaviour
             float bottomY = ladderCollider.bounds.min.y;
 
             // Set the positions of the children
-            topChild.transform.position = new Vector3(transform.position.x, topY - 0.1f, transform.position.z);
+            topChild.transform.position = new Vector3(transform.position.x, topY - 0.67f, transform.position.z);
             bottomChild.transform.position = new Vector3(transform.position.x, bottomY + 0.1f, transform.position.z);
 
             // Mark the scene as dirty so changes are saved

@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5989a4e0a12f06e48ba690f24be796cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
+  damage: 1
 --- !u!114 &265637666182167257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,6 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingSanity: 2
+  howlDirection: 0
   components: []
   afraidSound: {fileID: 8300000, guid: c93c98ee21635634fb1b23e856123cee, type: 3}
   fearedSound: {fileID: 8300000, guid: c6694a32e4ea3d747b6306151daedf22, type: 3}

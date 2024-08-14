@@ -15,15 +15,22 @@ public class SoundManager : MonoBehaviour
     // referencing scene function
     Scene scene;
 
-    [Header("Level 1 Music")]
+    [Header("Menu Music")]
     [SerializeField] private AudioClip mainMenuMusic;
-    [SerializeField] private AudioClip mainMusic;
+
+    [Header("UI Music")]
     [SerializeField] private AudioClip pauseMusic;
     [SerializeField] private AudioClip deathMusic;
     [SerializeField] private AudioClip finishMusic;
 
+    [Header("Level 1 Music")]
+    [SerializeField] private AudioClip mainMusic;
+
     [Header("Level 2 Music")]
     [SerializeField] private AudioClip level2Music;
+
+    [Header("Playtest Music")]
+    [SerializeField] private AudioClip playtestMusic;
 
     [Header("Minigame Music")]
     [SerializeField] private AudioClip rhythmMusic1;
@@ -53,24 +60,33 @@ public class SoundManager : MonoBehaviour
         scene = SceneManager.GetActiveScene();
 
         if (scene.buildIndex == 0 && !mainmusicSource.isPlaying)
-        {
             PlayMainMenuMusic();
-        }
 
-        if (scene.buildIndex == 1 && !mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
-        {
+
+        if (scene.buildIndex == 1 && CanPlayMusic())
             PlayMainMusic();
-        }
 
+
+        if (scene.buildIndex == 2 && CanPlayMusic())
+            PlayFinishMusic();
+        /*
         if (scene.buildIndex == 2 && !minigamemusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true && GameStateManager.minigameStart == true)
         {
             PlayRhythmMusic1();
-        }
+        }*/
 
-        if (scene.buildIndex == 3 && !mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
+        if (scene.buildIndex == 3 && CanPlayMusic())
+            PlayTestMusic();
+    }
+
+    private bool CanPlayMusic()
+    {
+        if (!mainmusicSource.isPlaying && GameStateManager.Paused != true && GameStateManager.playerLost != true)
         {
-            PlayLevel2Music();
+            return true;
         }
+        else
+            return false;
     }
 
     #region Volume Change Functions
@@ -227,6 +243,14 @@ public class SoundManager : MonoBehaviour
             mainmusicSource.PlayOneShot(level2Music);
         else
             Debug.LogWarning("Level 2 Music AudioClip is not assigned.");
+    }
+
+    public void PlayTestMusic()
+    {
+        if (mainmusicSource != null && !mainmusicSource.isPlaying)
+            mainmusicSource.PlayOneShot(playtestMusic);
+        else
+            Debug.LogWarning("Playtest Music AudioClip is not assigned.");
     }
 
     public void PlayFinishMusic()

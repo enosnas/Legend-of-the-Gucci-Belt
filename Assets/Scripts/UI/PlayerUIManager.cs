@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class PlayerUIManager : MonoBehaviour
 {
     public static PlayerUIManager Playermanager { get; private set; }
-
+    private bool canPause;
     // referencing scene function
     Scene scene;
 
@@ -45,14 +45,18 @@ public class PlayerUIManager : MonoBehaviour
     // disabling pause menu in main menu also
     private void Update()
     {
-        
+        if (scene.buildIndex != 0 && scene.buildIndex != 2)
+            canPause = true;
+        else
+            canPause = false;
+
         #region Pause in Menu Prevention/In Game Allowance
         // making the current scene set to the scene variable
         scene = SceneManager.GetActiveScene();
 
-        if (scene.buildIndex != 0)
+        if (canPause == true && controlScreen.activeInHierarchy == false)
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && GameStateManager.playerLost != true && controlScreen.activeInHierarchy == false)
+            if (Input.GetKeyDown(KeyCode.Escape) && GameStateManager.playerLost != true)
             {
                 // exit pause when hitting escape again
                 if (pauseScreen.activeInHierarchy)
@@ -77,16 +81,6 @@ public class PlayerUIManager : MonoBehaviour
             timer.SetActive(true);
         else
             timer.SetActive(false);
-        #endregion
-
-        #region Finish Game Check
-
-        if (GameStateManager.IsGameCompleted == true)
-        {
-            SoundManager.instance.StopMusic();
-            //SoundManager.instance.PlayFinishMusic();
-        }
-
         #endregion
     }
 

@@ -141,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
             if (GameStateManager.squirrelChosen == true)
                 WallJump();
         }
-        
+
         // adjustable jump height code
         if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0)
             body.velocity = new Vector2(body.velocity.x, body.velocity.y / 2);
@@ -163,7 +163,7 @@ public class PlayerMovement : MonoBehaviour
 
         #region Grounded and Swimming and Climbing Check
         // coyote timer reset or decrease when in the air and multi jump reset on ground
-        if (isGrounded() || onPlatform())
+        if (isGrounded() || onPlatform() || ladderExit == true)
         {
             coyoteCounter = coyoteTime;
             jumpCounter = 1;
@@ -195,45 +195,51 @@ public class PlayerMovement : MonoBehaviour
         // -> allowed to jump off ladder to exit or climb to top or bottom to exit -> holding direction while going up or down
         // changes exit point?
 
-        if (Input.GetKey(KeyCode.E))
-        {
-            body.gravityScale = 0;
-
-            if (!ladderExit)
-            {
-                snappingToLadder = true;
-                descentSnap = false;
-            }
-            else if (ladderExit)
-            {
-                descentSnap = true;
-                snappingToLadder = false;
-                descentY = transform.position.y - 1.5f;
-            }
-
-            climbingLadder = true;
-        }
-
         if (onLadder())
         {
-            if (climbingLadder)
+            if (Input.GetKey(KeyCode.E))
             {
-                if (snappingToLadder || descentSnap)
+                climbingLadder = true;
+
+                if (!ladderExit)
                 {
-                    // Disable player movement during snapping
-                    horizontalInput = 0;
-                    verticalInput = 0;
+                    snappingToLadder = true;
+                    descentSnap = false;
+                }
+                else if (ladderExit)
+                {
+                    descentSnap = true;
+                    snappingToLadder = false;
+                    descentY = transform.position.y - 1.5f;
+                }
+            }
 
+            if (climbingLadder == true)
+            {
+                body.gravityScale = 0;
+
+                if (snappingToLadder)
+                {
                     // Smoothly move the player to the ladder's x position
-                    Vector3 targetPosition = snappingToLadder
-                        ? new Vector3(ladderPos, transform.position.y, transform.position.z)
-                        : new Vector3(ladderPos, descentY, transform.position.z);
-
+                    Vector3 targetPosition = new Vector3(ladderPos, transform.position.y, transform.position.z);
                     transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * snapSpeed);
 
-                    // Check if the player has reached the target position
-                    if (Mathf.Abs(transform.position.x - ladderPos) < 0.01f &&
-                        (!descentSnap || Mathf.Abs(transform.position.y - descentY) < 0.01f))
+                    // Check if the player has reached the ladder's x position
+                    if (Mathf.Abs(transform.position.x - ladderPos) < 0.01f)
+                    {
+                        transform.position = targetPosition; // Snap to the exact position
+                        snappingToLadder = false;
+                        boxCollider.enabled = true;
+                    }
+                }
+                else if (descentSnap)
+                {
+                    // Smoothly move the player to the ladder's x position
+                    Vector3 targetPosition = new Vector3(ladderPos, descentY, transform.position.z);
+                    transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * snapSpeed);
+
+                    // Check if the player has reached the ladder's x position
+                    if (Mathf.Abs(transform.position.x - ladderPos) < 0.01f && Mathf.Abs(transform.position.y - descentY) < 0.01f)
                     {
                         transform.position = targetPosition; // Snap to the exact position
                         snappingToLadder = false;
@@ -243,7 +249,6 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    // Allow movement only after snapping is complete
                     if (Mathf.Abs(verticalInput) > 0f)
                     {
                         body.velocity = new Vector2(0, climbSpeed * verticalInput);
@@ -273,6 +278,8 @@ public class PlayerMovement : MonoBehaviour
         {
             climbingLadder = false;
             snappingToLadder = false;
+            descentSnap = false;
+            body.gravityScale = 2.1f;
         }
 
 
@@ -313,7 +320,7 @@ public class PlayerMovement : MonoBehaviour
         if (isWallsliding == true) return;
 
         // Adding the jump code into here from the original update void
-        if (isGrounded() || onPlatform())
+        if (isGrounded() || onPlatform() || ladderExit == true)
         {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
         }
@@ -478,20 +485,8 @@ public class PlayerMovement : MonoBehaviour
             0.1f,
             ladderLayer);
 
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center,
-    boxCollider.bounds.size,
-    0,
-    Vector2.down,
-    0.1f,
-    ladderLayer);
-
         if (raycastHit.collider != null)
             ladderPos = raycastHit.transform.position.x;
-        else if(raycastHit.collider == null)
-        {
-            climbingLadder = false;
-            body.gravityScale = 2.1f;
-        }
 
         return raycastHit.collider != null;
     }

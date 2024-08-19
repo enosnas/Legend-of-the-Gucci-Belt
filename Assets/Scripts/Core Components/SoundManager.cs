@@ -89,6 +89,30 @@ public class SoundManager : MonoBehaviour
             return false;
     }
 
+    #region Main Menu Music
+    public void PlayMainMenuMusic()
+    {
+        if (mainmusicSource != null && scene.buildIndex == 0)
+        {
+            mainmusicSource.clip = mainMenuMusic;
+            mainmusicSource.Play();
+        }
+        else
+            Debug.LogWarning("Main Menu Music AudioClip is not assigned.");
+    }
+
+    public void SkipMainMenuMusic()
+    {
+        if (mainmusicSource != null)
+        {
+            mainmusicSource.Stop();
+            mainmusicSource.clip = mainMenuMusic;
+            mainmusicSource.Play();
+            mainmusicSource.time = skipTime;
+        }
+    }
+    #endregion
+
     #region Volume Change Functions
     private void ChangeSourceVolume(string volumeName, float change, AudioSource source)
     {
@@ -259,30 +283,6 @@ public class SoundManager : MonoBehaviour
             mainmusicSource.PlayOneShot(finishMusic);
         else
             Debug.LogWarning("Finish Music AudioClip is not assigned.");
-    }
-    #endregion
-
-    #region Main Menu Music
-    public void PlayMainMenuMusic()
-    {
-        if (mainmusicSource != null && scene.buildIndex == 0)
-        {
-            mainmusicSource.clip = mainMenuMusic;
-            mainmusicSource.Play();
-        }
-        else
-            Debug.LogWarning("Main Menu Music AudioClip is not assigned.");
-    }
-
-    public void SkipMainMenuMusic()
-    {
-        if (mainmusicSource != null)
-        {
-            mainmusicSource.Stop();
-            mainmusicSource.clip = mainMenuMusic;
-            mainmusicSource.Play();
-            mainmusicSource.time = skipTime;
-        }
     }
     #endregion
 

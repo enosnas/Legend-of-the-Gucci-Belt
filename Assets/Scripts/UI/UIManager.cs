@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
         gameOverScreen.SetActive(false);
         pauseScreen.SetActive(false);
         settingsScreen.SetActive(false);
+        menuScreen.SetActive(false);
         //menuScreen.SetActive(false);
         //Cutscene.SetActive(true);
 
@@ -47,6 +48,7 @@ public class UIManager : MonoBehaviour
         {
             menuScreen.SetActive(true);
             Cutscene.SetActive(false);
+            SoundManager.instance.SkipMainMenuMusic();
         }
     }
 
@@ -67,7 +69,7 @@ public class UIManager : MonoBehaviour
         // making the current scene set to the scene variable
         scene = SceneManager.GetActiveScene();
 
-        if (scene.buildIndex != 0 && scene.buildIndex != 3)
+        if (scene.buildIndex != 0 && scene.buildIndex != 2)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {

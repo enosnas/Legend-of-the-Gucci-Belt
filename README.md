@@ -10,3 +10,7 @@ to the continued development and eventual release of this project, maybe it can 
 I'll put in more updates as they come but right now the main focus is completing the main mechanics of the game!
 Right now I would estimate that I am around 60% complete with the main mechanics. This comes after a sudden realization that Gucci Belt can be so much more, 
 and might not even be Gucci Belt soon! I don't want to spoil too much but look forward to some new mechanics such as wall jumping/sliding, destroying terrain, and more!
+
+8/19 Update
+I have finished the core mechanics of the game after lots of bug fixing and issues that were resolved after a bit of time and research! I'm now working on the level designs, 
+improved animations and character designs, as well as the story of this new game. 

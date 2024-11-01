@@ -93,9 +93,9 @@ public class PlayerMovement : MonoBehaviour
 
         // flipping the player's direction when moving left or right
         if (horizontalInput > 0.01f)
-            transform.localScale = new Vector3(3, 3, 1);
+            transform.localScale = new Vector3(1.5f, 1.5f, 1);
         else if (horizontalInput < -0.01f)
-            transform.localScale = new Vector3(-3, 3, 1);
+            transform.localScale = new Vector3(-1.5f, 1.5f, 1);
 
         // player movement
         // Will apply velocity in directions based on a vector, our first is left and right movement 
@@ -290,7 +290,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
         #endregion
-        
+        Debug.Log("Falling:" + Falling());
     }
     //update region end
     #endregion
@@ -489,6 +489,26 @@ public class PlayerMovement : MonoBehaviour
             ladderPos = raycastHit.transform.position.x;
 
         return raycastHit.collider != null;
+    }
+
+    private bool Falling()
+    {
+        if (!onWall() && !onLadder() && !isSwimming() && !isGrounded())
+            if (Mathf.Sign(body.velocity.y) == -1)
+            {
+                anim.SetBool("fall", true);
+                return true;
+            }
+            else
+            {
+                anim.SetBool("fall", false);
+                return false;
+            }
+        else
+        {
+            anim.SetBool("fall", false);
+            return false;
+        }
     }
     #endregion
 }

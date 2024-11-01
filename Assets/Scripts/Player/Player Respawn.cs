@@ -17,6 +17,11 @@ public class PlayerRespawn : MonoBehaviour
         uiManager = FindObjectOfType<PlayerUIManager>();
     }
 
+    private void Update()
+    {
+        Debug.Log(currentCheckpoint);
+    }
+
     public void CheckRespawn()
     {
         // checking if there is a current checkpoint

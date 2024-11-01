@@ -5,6 +5,7 @@ public class GameStateManager : MonoBehaviour
 {
     [SerializeField] private GameObject PauseScreen;
     [SerializeField] private GameObject controlScreen;
+    private bool timed;
 
     Scene scene; // scene reference
     public static bool IsGameCompleted { get; set; } = false;    // static bool to check for game completion
@@ -19,13 +20,15 @@ public class GameStateManager : MonoBehaviour
 
     private void Update()
     {
-        if (scene.buildIndex != 0 && IsGameCompleted != true && playerLost != true)
+        if (scene.buildIndex == 1 && IsGameCompleted != false && playerLost != false)
         {
             if (PauseScreen.activeInHierarchy == false || controlScreen.activeInHierarchy == false)
                 PlayTime += Time.deltaTime;
-            else if (PauseScreen.activeInHierarchy == true || controlScreen.activeInHierarchy == true)
-                PlayTime += 0;
         }
+        else if (PauseScreen.activeInHierarchy == true || controlScreen.activeInHierarchy == true)
+            PlayTime += 0;
+        else
+            PlayTime += 0;
 
         if (IsGameCompleted == true)
             Gyatt = true;
@@ -35,4 +38,5 @@ public class GameStateManager : MonoBehaviour
     {
         PlayTime = 0;
     }
+
 }
